@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>バレーボールサークル メンバー紹介</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(170deg, #0a0a1a 0%, #0d1b2a 40%, #1b2838 100%);
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* ── Animations ── */
+  @keyframes cardIn { from { opacity:0; transform:translateY(24px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+  @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes floatBall { 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-12px) rotate(15deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Background deco ── */
+  .bg-ball { position:fixed; pointer-events:none; opacity:.04; }
+  .bg-ball-1 { top:-80px; right:-80px; animation: floatBall 6s ease-in-out infinite; }
+  .bg-ball-2 { bottom:-60px; left:-40px; animation: floatBall 8s ease-in-out infinite 2s; }
+
+  /* ── Header ── */
+  header { padding: 40px 20px 20px; text-align: center; }
+  .header-row { display:inline-flex; align-items:center; gap:12px; margin-bottom:8px; animation: slideUp .6s ease-out; }
+  .header-icon { animation: floatBall 3s ease-in-out infinite; }
+  h1 {
+    font-size: 28px; font-weight: 900; letter-spacing: .04em;
+    background: linear-gradient(135deg, #ffb74d, #ff8a65, #ffcc80);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: rgba(255,255,255,.4); font-size: 13px; animation: slideUp .6s ease-out .1s both; }
+
+  /* ── Action bar ── */
+  .actions { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; padding:0 20px 24px; animation: slideUp .6s ease-out .2s both; }
+  .btn {
+    padding: 12px 22px; border-radius: 14px; border: none;
+    font-size: 14px; font-weight: 700; font-family: 'Zen Maru Gothic', sans-serif;
+    cursor: pointer; transition: all .3s ease; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: linear-gradient(135deg,#ff6f00,#ff8f00); color:#fff; box-shadow: 0 4px 20px rgba(255,111,0,.3); }
+  .btn-primary.cancel { background: rgba(255,255,255,.08); box-shadow: none; }
+  .btn-ghost { padding:12px 16px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); color:rgba(255,255,255,.4); }
+  .btn-ghost:hover { background:rgba(255,255,255,.08); }
+  .btn-icon-rotate { display:inline-block; font-size:18px; transition: transform .3s ease; }
+  .btn-icon-rotate.open { transform: rotate(45deg); }
+
+  /* ── Form ── */
+  .form-panel {
+    margin: 0 auto 28px; padding: 28px; border-radius: 20px; max-width: 500px; width: calc(100% - 40px);
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(12px); animation: slideUp .4s ease-out;
+  }
+  .form-panel.hidden { display: none; }
+  .photo-upload { display:flex; flex-direction:column; align-items:center; margin-bottom:24px; cursor:pointer; }
+  .photo-circle {
+    width:100px; height:100px; border-radius:50%; border:2px dashed rgba(255,255,255,.2);
+    overflow:hidden; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.03); transition: border-color .3s;
+  }
+  .photo-circle:hover { border-color: rgba(255,183,77,.4); }
+  .photo-circle img { width:100%; height:100%; object-fit:cover; }
+  .photo-placeholder { text-align:center; color:rgba(255,255,255,.3); }
+  .photo-placeholder .icon { font-size:28px; margin-bottom:4px; }
+  .photo-placeholder .text { font-size:10px; }
+  .photo-hint { color:rgba(255,255,255,.35); font-size:11px; margin-top:8px; }
+
+  .field { margin-bottom: 20px; }
+  .field label { color:rgba(255,255,255,.5); font-size:12px; font-weight:600; display:block; margin-bottom:8px; }
+  .field input[type="text"] {
+    width:100%; padding:14px 18px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05);
+    color:#fff; font-size:16px; font-family:'Zen Maru Gothic',sans-serif; outline:none;
+    transition: border-color .3s;
+  }
+  .field input[type="text"]:focus { border-color: rgba(255,183,77,.5); }
+  .field input[type="text"]::placeholder { color: rgba(255,255,255,.25); }
+
+  .chip-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip {
+    padding:10px 16px; border-radius:10px; border:2px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.03); color:rgba(255,255,255,.4);
+    font-size:14px; font-weight:600; font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer; transition:all .3s; display:flex; align-items:center; gap:6px;
+  }
+  .chip.exp-on { border-color:#ffb74d; background:rgba(255,183,77,.12); color:#ffcc80; }
+  .chip.beg-on { border-color:#81d4fa; background:rgba(129,212,250,.12); color:#b3e5fc; }
+  .chip.grade-on { border-color:#a5d6a7; background:rgba(165,214,167,.12); color:#c8e6c9; }
+
+  .btn-submit {
+    width:100%; padding:16px; border-radius:14px; border:none;
+    font-size:16px; font-weight:700; font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer; transition:all .3s;
+  }
+  .btn-submit.active { background:linear-gradient(135deg,#ff6f00,#ff8f00); color:#fff; box-shadow:0 4px 20px rgba(255,111,0,.25); }
+  .btn-submit.inactive { background:rgba(255,255,255,.05); color:rgba(255,255,255,.2); cursor:default; }
+
+  /* ── Cards grid ── */
+  .grid {
+    padding: 0 20px 40px; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px; max-width: 800px; margin: 0 auto;
+  }
+  .card-wrap { position: relative; perspective: 800px; cursor: pointer; }
+  .card-inner {
+    position: relative; width: 100%; padding-bottom: 130%;
+    transform-style: preserve-3d; transition: transform .6s cubic-bezier(.34,1.56,.64,1);
+  }
+  .card-inner.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:20px; overflow:hidden;
+  }
+  .card-front { display:flex; flex-direction:column; align-items:center; padding:28px 16px 20px; height:100%; }
+  .card-front .top-bar { position:absolute; top:0; left:0; right:0; height:6px; }
+  .card-front .avatar {
+    width:80px; height:80px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  }
+  .card-front .avatar img { width:100%; height:100%; object-fit:cover; }
+  .card-front .avatar-letter {
+    width:100%; height:100%; background:rgba(255,255,255,.08);
+    display:flex; align-items:center; justify-content:center;
+    font-size:32px; color:rgba(255,255,255,.5);
+  }
+  .card-front .member-name { font-size:18px; font-weight:700; margin:12px 0 2px; text-align:center; word-break:break-all; }
+  .card-front .member-grade { font-size:11px; color:rgba(255,255,255,.45); margin-bottom:8px; }
+  .card-front .badge {
+    display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:16px;
+    font-size:12px; font-weight:600;
+  }
+  .card-back {
+    transform:rotateY(180deg); display:flex; flex-direction:column; align-items:center;
+    justify-content:center; padding:20px; text-align:center;
+    background:linear-gradient(145deg,#0f3460,#1a1a2e); border:2px solid rgba(255,255,255,.1);
+  }
+  .card-back .back-name { font-size:15px; font-weight:700; margin-top:12px; }
+  .card-back .back-grade { font-size:11px; color:rgba(255,255,255,.5); margin-top:2px; }
+  .card-back .hobby-box {
+    margin-top:12px; padding:10px 14px; border-radius:12px;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); width:100%;
+  }
+  .card-back .hobby-label { font-size:10px; font-weight:600; color:rgba(255,255,255,.4); margin-bottom:3px; }
+  .card-back .hobby-text { font-size:13px; color:rgba(255,255,255,.8); line-height:1.5; word-break:break-all; }
+  .card-back .back-msg { font-size:13px; color:rgba(255,255,255,.4); margin-top:12px; }
+
+  .delete-btn {
+    position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.5); color:rgba(255,255,255,.5); font-size:13px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; z-index:10; opacity:.6; transition:opacity .2s;
+  }
+  .delete-btn:hover { opacity:1; }
+
+  /* ── Empty state ── */
+  .empty { text-align:center; padding:60px 20px; animation: fadeIn .6s ease-out .3s both; }
+  .empty .ball { font-size:48px; margin-bottom:16px; animation: floatBall 4s ease-in-out infinite; }
+  .empty p { color:rgba(255,255,255,.3); font-size:15px; line-height:1.8; }
+
+  /* ── Stats ── */
+  .stats { text-align:center; padding:0 20px 40px; animation: fadeIn .6s ease-out; }
+  .stats-inner {
+    display:inline-flex; gap:24px; padding:14px 28px; border-radius:16px;
+    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
+  }
+  .stat-item { text-align:center; }
+  .stat-num { font-size:22px; font-weight:900; }
+  .stat-label { font-size:11px; color:rgba(255,255,255,.35); }
+  .stat-sep { width:1px; background:rgba(255,255,255,.08); }
+
+  /* ── Data toolbar ── */
+  .data-toolbar {
+    display:flex; justify-content:center; flex-wrap:wrap; gap:10px; padding:0 20px 32px;
+    animation: slideUp .6s ease-out .3s both;
+  }
+  .data-toolbar .btn { font-size:13px; padding:10px 18px; border-radius:12px; }
+
+  /* ── Toast ── */
+  .toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+    padding:14px 28px; border-radius:14px; background:rgba(40,40,60,.95);
+    border:1px solid rgba(255,255,255,.1); color:#fff; font-size:14px;
+    font-family:'Zen Maru Gothic',sans-serif; backdrop-filter:blur(12px);
+    animation: slideUp .3s ease-out; z-index:100; pointer-events:none;
+  }
+  .toast.hide { opacity:0; transition: opacity .3s; }
+
+  /* ── Admin bar ── */
+  .admin-bar {
+    display:flex; justify-content:center; padding:0 20px 16px;
+    animation: slideUp .6s ease-out .15s both;
+  }
+  .btn-admin {
+    padding:10px 20px; border-radius:12px; border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.05); color:rgba(255,255,255,.4);
+    font-size:13px; font-weight:600; font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer; transition:all .3s; display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn-admin:hover { background:rgba(255,255,255,.08); }
+  .btn-admin.active {
+    border-color:rgba(239,83,80,.4); background:rgba(239,83,80,.1); color:#ef9a9a;
+  }
+
+  /* ── Password modal ── */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(6px);
+    display:flex; align-items:center; justify-content:center; z-index:200;
+    animation: fadeIn .2s ease-out;
+  }
+  .modal-overlay.hidden { display:none; }
+  .modal {
+    background:linear-gradient(145deg,#1a1a2e,#16213e); border:1px solid rgba(255,255,255,.1);
+    border-radius:20px; padding:32px; width:calc(100% - 40px); max-width:360px;
+    animation: slideUp .3s ease-out;
+  }
+  .modal h2 { font-size:18px; font-weight:700; margin-bottom:6px; text-align:center; }
+  .modal .modal-sub { font-size:12px; color:rgba(255,255,255,.4); text-align:center; margin-bottom:20px; }
+  .modal input[type="password"] {
+    width:100%; padding:14px 18px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.05);
+    color:#fff; font-size:16px; font-family:'Zen Maru Gothic',sans-serif;
+    outline:none; transition:border-color .3s; margin-bottom:16px;
+  }
+  .modal input[type="password"]:focus { border-color: rgba(239,83,80,.5); }
+  .modal input[type="password"]::placeholder { color:rgba(255,255,255,.25); }
+  .modal .modal-actions { display:flex; gap:10px; }
+  .modal .modal-actions button {
+    flex:1; padding:14px; border-radius:12px; border:none;
+    font-size:15px; font-weight:700; font-family:'Zen Maru Gothic',sans-serif;
+    cursor:pointer; transition:all .3s;
+  }
+  .modal .btn-cancel { background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); }
+  .modal .btn-confirm { background:linear-gradient(135deg,#ef5350,#e53935); color:#fff; box-shadow:0 4px 16px rgba(239,83,80,.25); }
+  .modal .error-msg { color:#ef5350; font-size:12px; text-align:center; margin-bottom:12px; display:none; }
+
+  /* Experience color helpers (set via JS) */
+  .exp-card { background:linear-gradient(145deg,#1a1a2e,#16213e 50%,#0f3460); border:2px solid rgba(255,183,77,.4); box-shadow:0 8px 32px rgba(255,183,77,.15); }
+  .beg-card { background:linear-gradient(145deg,#2d1b4e,#1a1a2e 50%,#16213e); border:2px solid rgba(129,212,250,.4); box-shadow:0 8px 32px rgba(129,212,250,.15); }
+</style>
+</head>
+<body>
+
+<!-- BG decorations -->
+<div class="bg-ball bg-ball-1">
+  <svg width="280" height="280" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#fff" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="#fff" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="#fff" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="#fff" stroke-width="2.5"/></svg>
+</div>
+<div class="bg-ball bg-ball-2">
+  <svg width="200" height="200" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#fff" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="#fff" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="#fff" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="#fff" stroke-width="2.5"/></svg>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-row">
+    <span class="header-icon">
+      <svg width="36" height="36" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#ffb74d" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="#ffb74d" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="#ffb74d" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="#ffb74d" stroke-width="2.5"/></svg>
+    </span>
+    <h1>メンバー紹介</h1>
+  </div>
+  <p class="subtitle">バレーボールサークル</p>
+</header>
+
+<!-- Actions -->
+<div class="actions">
+  <button class="btn btn-primary" id="toggleFormBtn" onclick="toggleForm()">
+    <span class="btn-icon-rotate" id="plusIcon">＋</span>
+    <span id="toggleLabel">自己紹介を投稿</span>
+  </button>
+</div>
+
+<!-- Admin bar -->
+<div class="admin-bar">
+  <button class="btn-admin" id="adminBtn" onclick="handleAdminClick()">
+    <span id="adminIcon">🔒</span>
+    <span id="adminLabel">管理者モード</span>
+  </button>
+</div>
+
+<!-- Password modal -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2 id="modalTitle">管理者ログイン</h2>
+    <p class="modal-sub" id="modalSub">パスワードを入力してください</p>
+    <div class="error-msg" id="modalError">パスワードが違います</div>
+    <input type="password" id="modalPassword" placeholder="パスワード" onkeydown="if(event.key==='Enter')modalConfirm()">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="btn-confirm" id="modalConfirmBtn" onclick="modalConfirm()">ログイン</button>
+    </div>
+  </div>
+</div>
+
+<!-- Form -->
+<div class="form-panel hidden" id="formPanel">
+  <!-- Photo -->
+  <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+    <div class="photo-circle" id="photoCircle">
+      <div class="photo-placeholder" id="photoPlaceholder">
+        <div class="icon">📷</div>
+        <div class="text">タップで追加</div>
+      </div>
+    </div>
+    <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+    <span class="photo-hint">顔写真（任意）</span>
+  </div>
+
+  <!-- Name -->
+  <div class="field">
+    <label>名前 *</label>
+    <input type="text" id="nameInput" placeholder="ニックネームでもOK">
+  </div>
+
+  <!-- Grade -->
+  <div class="field">
+    <label>学年 *</label>
+    <div class="chip-row" id="gradeRow"></div>
+  </div>
+
+  <!-- Hobby -->
+  <div class="field">
+    <label>趣味</label>
+    <input type="text" id="hobbyInput" placeholder="例：映画鑑賞、旅行、ゲーム">
+  </div>
+
+  <!-- Experience -->
+  <div class="field">
+    <label>バレーボール *</label>
+    <div class="chip-row" id="expRow"></div>
+  </div>
+
+  <button class="btn-submit inactive" id="submitBtn" onclick="submitMember()">投稿する 🏐</button>
+</div>
+
+<!-- Data toolbar (admin only) -->
+<div class="data-toolbar" id="dataToolbar" style="display:none">
+  <button class="btn btn-ghost" onclick="exportJSON()">📤 JSONエクスポート</button>
+  <button class="btn btn-ghost" onclick="document.getElementById('importInput').click()">📥 JSONインポート</button>
+  <button class="btn btn-ghost" onclick="resetAll()" style="color:#ef9a9a;border-color:rgba(239,83,80,.3)">🗑 全員リセット</button>
+  <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(event)">
+</div>
+
+<!-- Member grid -->
+<div id="memberArea"></div>
+
+<!-- Stats -->
+<div id="statsArea"></div>
+
+<!-- Toast -->
+<div class="toast hide" id="toast"></div>
+
+<script>
+// ── State ──
+let members = [];
+let formOpen = false;
+let selectedGrade = '';
+let selectedExp = '';
+let photoData = null;
+let isAdmin = false;
+let modalMode = ''; // 'login', 'setup', 'change'
+
+const GRADES = ['1年','2年','3年','4年','院生','その他'];
+const EXPS = ['経験者','未経験'];
+const PW_KEY = 'volleyball-admin-pw';
+
+// ── Init ──
+function init() {
+  try {
+    const saved = localStorage.getItem('volleyball-members');
+    if (saved) members = JSON.parse(saved);
+  } catch(e) {}
+  buildGradeChips();
+  buildExpChips();
+  render();
+  updateAdminUI();
+  document.getElementById('nameInput').addEventListener('input', updateSubmitState);
+  document.getElementById('hobbyInput').addEventListener('input', updateSubmitState);
+}
+
+function save() {
+  try { localStorage.setItem('volleyball-members', JSON.stringify(members)); } catch(e) {}
+}
+
+// ── Admin ──
+function getStoredPassword() {
+  try { return localStorage.getItem(PW_KEY); } catch(e) { return null; }
+}
+
+function setStoredPassword(pw) {
+  try { localStorage.setItem(PW_KEY, pw); } catch(e) {}
+}
+
+function handleAdminClick() {
+  if (isAdmin) {
+    // Logout
+    isAdmin = false;
+    updateAdminUI();
+    render();
+    showToast('管理者モードを終了しました');
+    return;
+  }
+  const stored = getStoredPassword();
+  if (!stored) {
+    // First time — set password
+    modalMode = 'setup';
+    document.getElementById('modalTitle').textContent = '管理者パスワードの設定';
+    document.getElementById('modalSub').textContent = '初回のみ：パスワードを設定してください';
+    document.getElementById('modalConfirmBtn').textContent = '設定する';
+  } else {
+    // Login
+    modalMode = 'login';
+    document.getElementById('modalTitle').textContent = '管理者ログイン';
+    document.getElementById('modalSub').textContent = 'パスワードを入力してください';
+    document.getElementById('modalConfirmBtn').textContent = 'ログイン';
+  }
+  document.getElementById('modalPassword').value = '';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('modalPassword').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+function modalConfirm() {
+  const pw = document.getElementById('modalPassword').value;
+  if (!pw) return;
+
+  if (modalMode === 'setup') {
+    if (pw.length < 4) {
+      document.getElementById('modalError').textContent = '4文字以上で設定してください';
+      document.getElementById('modalError').style.display = 'block';
+      return;
+    }
+    setStoredPassword(pw);
+    isAdmin = true;
+    closeModal();
+    updateAdminUI();
+    render();
+    showToast('パスワードを設定しました 🔐');
+  } else if (modalMode === 'login') {
+    if (pw !== getStoredPassword()) {
+      document.getElementById('modalError').textContent = 'パスワードが違います';
+      document.getElementById('modalError').style.display = 'block';
+      document.getElementById('modalPassword').value = '';
+      return;
+    }
+    isAdmin = true;
+    closeModal();
+    updateAdminUI();
+    render();
+    showToast('管理者モードでログインしました 🔓');
+  }
+}
+
+function updateAdminUI() {
+  const btn = document.getElementById('adminBtn');
+  const icon = document.getElementById('adminIcon');
+  const label = document.getElementById('adminLabel');
+  if (isAdmin) {
+    btn.classList.add('active');
+    icon.textContent = '🔓';
+    label.textContent = 'ログアウト';
+  } else {
+    btn.classList.remove('active');
+    icon.textContent = '🔒';
+    label.textContent = '管理者モード';
+  }
+}
+
+// ── Chips ──
+function buildGradeChips() {
+  const row = document.getElementById('gradeRow');
+  row.innerHTML = '';
+  GRADES.forEach(g => {
+    const c = document.createElement('button');
+    c.className = 'chip' + (selectedGrade === g ? ' grade-on' : '');
+    c.textContent = g;
+    c.onclick = () => { selectedGrade = g; buildGradeChips(); updateSubmitState(); };
+    row.appendChild(c);
+  });
+}
+
+function buildExpChips() {
+  const row = document.getElementById('expRow');
+  row.innerHTML = '';
+  EXPS.forEach(e => {
+    const c = document.createElement('button');
+    const isOn = selectedExp === e;
+    c.className = 'chip' + (isOn ? (e === '経験者' ? ' exp-on' : ' beg-on') : '');
+    c.innerHTML = '<span>' + (e === '経験者' ? '🏐' : '🌱') + '</span>' + e;
+    c.onclick = () => { selectedExp = e; buildExpChips(); updateSubmitState(); };
+    row.appendChild(c);
+  });
+}
+
+// ── Photo ──
+function handlePhoto(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    photoData = e.target.result;
+    const circle = document.getElementById('photoCircle');
+    circle.innerHTML = '<img src="' + photoData + '" alt="preview">';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Form toggle ──
+function toggleForm() {
+  formOpen = !formOpen;
+  document.getElementById('formPanel').classList.toggle('hidden', !formOpen);
+  document.getElementById('plusIcon').classList.toggle('open', formOpen);
+  document.getElementById('toggleLabel').textContent = formOpen ? 'キャンセル' : '自己紹介を投稿';
+  document.getElementById('toggleFormBtn').classList.toggle('cancel', formOpen);
+}
+
+// ── Submit state ──
+function updateSubmitState() {
+  const name = document.getElementById('nameInput').value.trim();
+  const ok = name && selectedGrade && selectedExp;
+  const btn = document.getElementById('submitBtn');
+  btn.className = 'btn-submit ' + (ok ? 'active' : 'inactive');
+}
+
+// ── Submit ──
+function submitMember() {
+  const name = document.getElementById('nameInput').value.trim();
+  const hobby = document.getElementById('hobbyInput').value.trim();
+  if (!name || !selectedGrade || !selectedExp) return;
+
+  members.push({
+    id: Date.now(),
+    name, grade: selectedGrade, hobby,
+    experience: selectedExp, photo: photoData
+  });
+  save();
+
+  // Reset form
+  document.getElementById('nameInput').value = '';
+  document.getElementById('hobbyInput').value = '';
+  selectedGrade = ''; selectedExp = ''; photoData = null;
+  document.getElementById('photoCircle').innerHTML = '<div class="photo-placeholder"><div class="icon">📷</div><div class="text">タップで追加</div></div>';
+  document.getElementById('photoInput').value = '';
+  buildGradeChips(); buildExpChips(); updateSubmitState();
+  formOpen = false;
+  document.getElementById('formPanel').classList.add('hidden');
+  document.getElementById('plusIcon').classList.remove('open');
+  document.getElementById('toggleLabel').textContent = '自己紹介を投稿';
+  document.getElementById('toggleFormBtn').classList.remove('cancel');
+
+  render();
+  showToast('投稿しました！🏐');
+}
+
+// ── Delete ──
+function deleteMember(id) {
+  if (!isAdmin) { showToast('削除は管理者のみ可能です 🔒'); return; }
+  if (!confirm('このメンバーを削除しますか？')) return;
+  members = members.filter(m => m.id !== id);
+  save(); render();
+  showToast('削除しました');
+}
+
+function resetAll() {
+  if (!isAdmin) { showToast('リセットは管理者のみ可能です 🔒'); return; }
+  if (!confirm('全てのメンバーを削除しますか？')) return;
+  members = [];
+  try { localStorage.removeItem('volleyball-members'); } catch(e) {}
+  render();
+  showToast('リセットしました');
+}
+
+// ── Flip ──
+function flipCard(id) {
+  const el = document.getElementById('card-' + id);
+  if (el) el.classList.toggle('flipped');
+}
+
+// ── Render ──
+function render() {
+  const area = document.getElementById('memberArea');
+  const statsArea = document.getElementById('statsArea');
+  const toolbar = document.getElementById('dataToolbar');
+
+  toolbar.style.display = (members.length > 0 && isAdmin) ? '' : 'none';
+
+  if (members.length === 0) {
+    area.innerHTML = '<div class="empty"><div class="ball">🏐</div><p>まだメンバーがいません<br>「自己紹介を投稿」から始めましょう！</p></div>';
+    statsArea.innerHTML = '';
+    return;
+  }
+
+  let html = '<div class="grid">';
+  members.forEach((m, i) => {
+    const isExp = m.experience === '経験者';
+    const cardClass = isExp ? 'exp-card' : 'beg-card';
+    const barBg = isExp ? 'linear-gradient(90deg,#ff6f00,#ffb74d,#ff6f00)' : 'linear-gradient(90deg,#0288d1,#81d4fa,#0288d1)';
+    const borderCol = isExp ? '#ffb74d' : '#81d4fa';
+    const shadowCol = isExp ? 'rgba(255,183,77,.3)' : 'rgba(129,212,250,.3)';
+    const badgeBg = isExp ? 'rgba(255,183,77,.15)' : 'rgba(129,212,250,.15)';
+    const badgeCol = isExp ? '#ffcc80' : '#b3e5fc';
+    const badgeBorder = isExp ? 'rgba(255,183,77,.3)' : 'rgba(129,212,250,.3)';
+    const emoji = isExp ? '🏐' : '🌱';
+
+    const avatar = m.photo
+      ? '<img src="' + m.photo + '" alt="' + m.name + '">'
+      : '<div class="avatar-letter">' + (m.name?.[0] || '?') + '</div>';
+
+    const gradeHtml = m.grade ? '<div class="member-grade">' + m.grade + '</div>' : '';
+    const hobbyHtml = m.hobby
+      ? '<div class="hobby-box"><div class="hobby-label">趣味</div><div class="hobby-text">' + escHtml(m.hobby) + '</div></div>'
+      : '<div class="back-msg">よろしくお願いします！🏐</div>';
+    const backGrade = m.grade ? '<div class="back-grade">' + m.grade + '</div>' : '';
+
+    html += `
+      <div class="card-wrap" style="animation:cardIn .5s ease-out ${i * 0.08}s both">
+        <div class="card-inner" id="card-${m.id}" onclick="flipCard(${m.id})">
+          <div class="card-face ${cardClass}">
+            <div class="top-bar" style="background:${barBg}"></div>
+            <div class="card-front">
+              <div class="avatar" style="border:3px solid ${borderCol};box-shadow:0 0 20px ${shadowCol}">${avatar}</div>
+              <div class="member-name">${escHtml(m.name)}</div>
+              ${gradeHtml}
+              <div class="badge" style="background:${badgeBg};color:${badgeCol};border:1px solid ${badgeBorder}">
+                <span>${emoji}</span>${m.experience}
+              </div>
+            </div>
+          </div>
+          <div class="card-face card-back">
+            <svg width="36" height="36" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,.25)" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="rgba(255,255,255,.25)" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="rgba(255,255,255,.25)" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="rgba(255,255,255,.25)" stroke-width="2.5"/></svg>
+            <div class="back-name">${escHtml(m.name)}</div>
+            ${backGrade}
+            ${hobbyHtml}
+          </div>
+        </div>
+        <button class="delete-btn" onclick="event.stopPropagation();deleteMember(${m.id})" style="display:${isAdmin ? 'flex' : 'none'}">✕</button>
+      </div>`;
+  });
+  html += '</div>';
+  area.innerHTML = html;
+
+  // Stats
+  const expCount = members.filter(m => m.experience === '経験者').length;
+  const begCount = members.filter(m => m.experience === '未経験').length;
+  statsArea.innerHTML = `
+    <div class="stats"><div class="stats-inner">
+      <div class="stat-item"><div class="stat-num" style="color:#ffb74d">${expCount}</div><div class="stat-label">経験者</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-num" style="color:#81d4fa">${begCount}</div><div class="stat-label">未経験</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="stat-num" style="color:rgba(255,255,255,.8)">${members.length}</div><div class="stat-label">合計</div></div>
+    </div></div>`;
+}
+
+// ── JSON Export ──
+function exportJSON() {
+  const exportData = members.map(m => ({
+    name: m.name,
+    grade: m.grade,
+    hobby: m.hobby,
+    experience: m.experience,
+    photo: m.photo || null
+  }));
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'volleyball-members.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('JSONをエクスポートしました 📤');
+}
+
+// ── JSON Import ──
+function importJSON(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('invalid');
+      let count = 0;
+      data.forEach(d => {
+        if (!d.name || !d.experience) return;
+        members.push({
+          id: Date.now() + Math.random(),
+          name: d.name,
+          grade: d.grade || '',
+          hobby: d.hobby || '',
+          experience: d.experience,
+          photo: d.photo || null
+        });
+        count++;
+      });
+      save(); render();
+      showToast(count + '人をインポートしました 📥');
+    } catch(err) {
+      showToast('JSONの読み込みに失敗しました');
+    }
+    ev.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hide');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.add('hide'), 2500);
+}
+
+// ── Util ──
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+init();
+</script>
+</body>
+</html>
