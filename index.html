@@ -14,6 +14,7 @@
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
   @keyframes floatBall{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(15deg)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   .bg-ball{position:fixed;pointer-events:none;opacity:.04}
   .bg-ball-1{top:-80px;right:-80px;animation:floatBall 6s ease-in-out infinite}
@@ -24,6 +25,10 @@
   .header-icon{animation:floatBall 3s ease-in-out infinite}
   h1{font-size:28px;font-weight:900;letter-spacing:.04em;background:linear-gradient(135deg,#ffb74d,#ff8a65,#ffcc80);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .subtitle{color:rgba(255,255,255,.4);font-size:13px;animation:slideUp .6s ease-out .1s both}
+  .sync-indicator{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:rgba(255,255,255,.35)}
+  .sync-dot{width:6px;height:6px;border-radius:50%;background:#66bb6a;box-shadow:0 0 8px rgba(102,187,106,.6)}
+  .sync-dot.offline{background:#ef5350;box-shadow:0 0 8px rgba(239,83,80,.6)}
+  .sync-dot.loading{background:#ffb74d;animation:floatBall 1s ease-in-out infinite}
 
   .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:0 20px 24px;animation:slideUp .6s ease-out .2s both}
   .btn{padding:12px 22px;border-radius:14px;border:none;font-size:14px;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;cursor:pointer;transition:all .3s ease;display:inline-flex;align-items:center;gap:8px}
@@ -39,14 +44,14 @@
   .btn-admin:hover{background:rgba(255,255,255,.08)}
   .btn-admin.active{border-color:rgba(239,83,80,.4);background:rgba(239,83,80,.1);color:#ef9a9a}
 
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn .2s ease-out}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeIn .2s ease-out;padding:20px}
   .modal-overlay.hidden{display:none}
-  .modal{background:linear-gradient(145deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;width:calc(100% - 40px);max-width:360px;animation:slideUp .3s ease-out}
+  .modal{background:linear-gradient(145deg,#1a1a2e,#16213e);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:32px;width:100%;max-width:360px;animation:slideUp .3s ease-out;max-height:90vh;overflow-y:auto}
   .modal h2{font-size:18px;font-weight:700;margin-bottom:6px;text-align:center}
   .modal .modal-sub{font-size:12px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:20px}
-  .modal input[type="password"]{width:100%;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;font-size:16px;font-family:'Zen Maru Gothic',sans-serif;outline:none;transition:border-color .3s;margin-bottom:16px}
-  .modal input[type="password"]:focus{border-color:rgba(239,83,80,.5)}
-  .modal input[type="password"]::placeholder{color:rgba(255,255,255,.25)}
+  .modal input[type="password"],.modal input[type="text"]{width:100%;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff;font-size:16px;font-family:'Zen Maru Gothic',sans-serif;outline:none;transition:border-color .3s;margin-bottom:16px}
+  .modal input:focus{border-color:rgba(239,83,80,.5)}
+  .modal input::placeholder{color:rgba(255,255,255,.25)}
   .modal .modal-actions{display:flex;gap:10px}
   .modal .modal-actions button{flex:1;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;cursor:pointer;transition:all .3s}
   .modal .btn-cancel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
@@ -55,14 +60,16 @@
 
   .form-panel{margin:0 auto 28px;padding:28px;border-radius:20px;max-width:500px;width:calc(100% - 40px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px);animation:slideUp .4s ease-out}
   .form-panel.hidden{display:none}
+  .form-panel h3{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:16px;text-align:center;font-weight:600}
   .photo-upload{display:flex;flex-direction:column;align-items:center;margin-bottom:24px;cursor:pointer}
-  .photo-circle{width:100px;height:100px;border-radius:50%;border:2px dashed rgba(255,255,255,.2);overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);transition:border-color .3s}
+  .photo-circle{width:100px;height:100px;border-radius:50%;border:2px dashed rgba(255,255,255,.2);overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);transition:border-color .3s;position:relative}
   .photo-circle:hover{border-color:rgba(255,183,77,.4)}
   .photo-circle img{width:100%;height:100%;object-fit:cover}
   .photo-placeholder{text-align:center;color:rgba(255,255,255,.3)}
   .photo-placeholder .icon{font-size:28px;margin-bottom:4px}
   .photo-placeholder .text{font-size:10px}
   .photo-hint{color:rgba(255,255,255,.35);font-size:11px;margin-top:8px}
+  .photo-loading{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px}
 
   .field{margin-bottom:20px}
   .field label{color:rgba(255,255,255,.5);font-size:12px;font-weight:600;display:block;margin-bottom:8px}
@@ -77,6 +84,7 @@
   .btn-submit{width:100%;padding:16px;border-radius:14px;border:none;font-size:16px;font-weight:700;font-family:'Zen Maru Gothic',sans-serif;cursor:pointer;transition:all .3s}
   .btn-submit.active{background:linear-gradient(135deg,#ff6f00,#ff8f00);color:#fff;box-shadow:0 4px 20px rgba(255,111,0,.25)}
   .btn-submit.inactive{background:rgba(255,255,255,.05);color:rgba(255,255,255,.2);cursor:default}
+  .btn-submit.loading{background:rgba(255,183,77,.2);color:rgba(255,255,255,.6);cursor:default}
 
   .grade-section{padding:0 20px 12px;max-width:800px;margin:0 auto}
   .grade-section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:0 4px}
@@ -109,8 +117,11 @@
   .card-back .detail-box+.detail-box{margin-top:6px}
   .card-back .back-msg{font-size:13px;color:rgba(255,255,255,.4);margin-top:12px}
 
-  .delete-btn{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,.5);color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;opacity:.6;transition:opacity .2s}
-  .delete-btn:hover{opacity:1}
+  .card-actions{position:absolute;top:8px;right:8px;display:flex;gap:6px;z-index:10}
+  .icon-btn{width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,.5);color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.7;transition:opacity .2s}
+  .icon-btn:hover{opacity:1}
+  .icon-btn.edit{color:rgba(129,212,250,.8)}
+  .icon-btn.delete{color:rgba(239,154,154,.8)}
 
   .empty{text-align:center;padding:60px 20px;animation:fadeIn .6s ease-out .3s both}
   .empty .ball{font-size:48px;margin-bottom:16px;animation:floatBall 4s ease-in-out infinite}
@@ -126,16 +137,26 @@
   .data-toolbar{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:0 20px 32px;animation:slideUp .6s ease-out .3s both}
   .data-toolbar .btn{font-size:13px;padding:10px 18px;border-radius:12px}
 
-  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:14px 28px;border-radius:14px;background:rgba(40,40,60,.95);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;font-family:'Zen Maru Gothic',sans-serif;backdrop-filter:blur(12px);animation:slideUp .3s ease-out;z-index:100;pointer-events:none}
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:14px 28px;border-radius:14px;background:rgba(40,40,60,.95);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;font-family:'Zen Maru Gothic',sans-serif;backdrop-filter:blur(12px);animation:slideUp .3s ease-out;z-index:100;pointer-events:none;max-width:90%;text-align:center}
   .toast.hide{opacity:0;transition:opacity .3s}
 
   .theme-gold{background:linear-gradient(145deg,#1a1a2e,#16213e 50%,#0f3460);border:2px solid rgba(255,183,77,.3);box-shadow:0 8px 32px rgba(255,183,77,.1)}
   .theme-blue{background:linear-gradient(145deg,#1a1a2e,#162a3e 50%,#0f4460);border:2px solid rgba(129,212,250,.3);box-shadow:0 8px 32px rgba(129,212,250,.1)}
   .theme-purple{background:linear-gradient(145deg,#2d1b4e,#1a1a2e 50%,#16213e);border:2px solid rgba(206,147,216,.3);box-shadow:0 8px 32px rgba(206,147,216,.1)}
   .theme-green{background:linear-gradient(145deg,#1a2e1a,#163e1e 50%,#0f4630);border:2px solid rgba(165,214,167,.3);box-shadow:0 8px 32px rgba(165,214,167,.1)}
+
+  .loading-screen{position:fixed;inset:0;background:#0a0a1a;display:flex;align-items:center;justify-content:center;z-index:300;flex-direction:column;gap:20px}
+  .loading-screen.hidden{display:none}
+  .spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:#ffb74d;border-radius:50%;animation:spin 1s linear infinite}
+  .loading-screen p{color:rgba(255,255,255,.5);font-size:13px}
 </style>
 </head>
 <body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <p>データを読み込んでいます...</p>
+</div>
 
 <div class="bg-ball bg-ball-1">
   <svg width="280" height="280" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="#fff" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="#fff" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="#fff" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="#fff" stroke-width="2.5"/></svg>
@@ -152,6 +173,7 @@
     <h1>c.a.v. 自己紹介</h1>
   </div>
   <p class="subtitle">メンバー紹介ページ</p>
+  <div class="sync-indicator"><span class="sync-dot loading" id="syncDot"></span><span id="syncText">接続中...</span></div>
 </header>
 
 <div class="actions">
@@ -182,6 +204,7 @@
 </div>
 
 <div class="form-panel hidden" id="formPanel">
+  <h3 id="formTitle">新規投稿</h3>
   <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
     <div class="photo-circle" id="photoCircle">
       <div class="photo-placeholder">
@@ -204,207 +227,478 @@
 
 <div class="data-toolbar" id="dataToolbar" style="display:none">
   <button class="btn btn-ghost" onclick="exportJSON()">📤 JSONエクスポート</button>
-  <button class="btn btn-ghost" onclick="document.getElementById('importInput').click()">📥 JSONインポート</button>
+  <button class="btn btn-ghost" onclick="changePassword()">🔑 パスワード変更</button>
   <button class="btn btn-ghost" onclick="resetAll()" style="color:#ef9a9a;border-color:rgba(239,83,80,.3)">🗑 全員リセット</button>
-  <input type="file" id="importInput" accept=".json" style="display:none" onchange="importJSON(event)">
 </div>
 
 <div id="memberArea"></div>
 <div id="statsArea"></div>
 <div class="toast hide" id="toast"></div>
 
-<script>
-let members=[], formOpen=false, selectedGrade='', photoData=null, isAdmin=false, modalMode='';
-const GRADES=['1回生','2回生','3回生','4回生','それ以上'];
-const GRADE_ORDER=['1回生','2回生','3回生','4回生','それ以上',''];
-const THEMES=['theme-gold','theme-blue','theme-purple','theme-green','theme-gold'];
-const PW_KEY='cav-admin-pw';
+<script type="module">
+// ── Firebase SDK ──
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs, writeBatch, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-function init(){
-  try{ const s=localStorage.getItem('cav-members'); if(s) members=JSON.parse(s); }catch(e){}
-  buildGradeChips(); render(); updateAdminUI();
-  document.getElementById('nameInput').addEventListener('input',updateSubmitState);
+// ── Firebase Config ──
+const firebaseConfig = {
+  apiKey: "AIzaSyDzzqEfG1TbgYlTk9xdwnefyznOWlIQGfA",
+  authDomain: "cav-intro.firebaseapp.com",
+  projectId: "cav-intro",
+  storageBucket: "cav-intro.firebasestorage.app",
+  messagingSenderId: "758682266860",
+  appId: "1:758682266860:web:7c70b3f5b7598d996789c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const membersCol = collection(db, "members");
+const configDoc = doc(db, "config", "admin");
+
+// ── State ──
+let members = [];
+let formOpen = false;
+let selectedGrade = '';
+let photoData = null;
+let isAdmin = false;
+let modalMode = '';
+let editingId = null;
+let submitting = false;
+
+const GRADES = ['1回生','2回生','3回生','4回生','それ以上'];
+const GRADE_ORDER = ['1回生','2回生','3回生','4回生','それ以上',''];
+const THEMES = ['theme-gold','theme-blue','theme-purple','theme-green','theme-gold'];
+const SESSION_KEY = 'cav-admin-session';
+
+// ── SHA-256 password hashing ──
+async function hashPassword(pw) {
+  const buf = new TextEncoder().encode(pw);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
-function save(){ try{localStorage.setItem('cav-members',JSON.stringify(members));}catch(e){} }
 
-// Admin
-function getStoredPassword(){ try{return localStorage.getItem(PW_KEY);}catch(e){return null;} }
-function setStoredPassword(pw){ try{localStorage.setItem(PW_KEY,pw);}catch(e){} }
-function handleAdminClick(){
-  if(isAdmin){ isAdmin=false; updateAdminUI(); render(); showToast('管理者モードを終了しました'); return; }
-  const stored=getStoredPassword();
-  if(!stored){
-    modalMode='setup';
-    document.getElementById('modalTitle').textContent='管理者パスワードの設定';
-    document.getElementById('modalSub').textContent='初回のみ：パスワードを設定してください';
-    document.getElementById('modalConfirmBtn').textContent='設定する';
+// ── Image compression (max 400x400, JPEG 0.75) ──
+async function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 400;
+        let { width, height } = img;
+        if (width > height) {
+          if (width > MAX) { height = Math.round(height * MAX / width); width = MAX; }
+        } else {
+          if (height > MAX) { width = Math.round(width * MAX / height); height = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Firestore Realtime Listener ──
+function initFirestore() {
+  const q = query(membersCol, orderBy('createdAt', 'asc'));
+  onSnapshot(q, (snapshot) => {
+    members = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+    document.getElementById('loadingScreen').classList.add('hidden');
+    updateSyncStatus(true);
+  }, (err) => {
+    console.error('Firestore error:', err);
+    updateSyncStatus(false);
+    document.getElementById('loadingScreen').classList.add('hidden');
+    showToast('データの取得に失敗しました');
+  });
+}
+
+function updateSyncStatus(online) {
+  const dot = document.getElementById('syncDot');
+  const text = document.getElementById('syncText');
+  dot.classList.remove('loading');
+  if (online) {
+    dot.classList.remove('offline');
+    text.textContent = 'リアルタイム同期中';
   } else {
-    modalMode='login';
-    document.getElementById('modalTitle').textContent='管理者ログイン';
-    document.getElementById('modalSub').textContent='パスワードを入力してください';
-    document.getElementById('modalConfirmBtn').textContent='ログイン';
+    dot.classList.add('offline');
+    text.textContent = 'オフライン';
   }
-  document.getElementById('modalPassword').value='';
-  document.getElementById('modalError').style.display='none';
+}
+
+// ── Admin ──
+async function getStoredPasswordHash() {
+  try {
+    const snap = await getDocs(collection(db, "config"));
+    const d = snap.docs.find(x => x.id === 'admin');
+    return d ? d.data().passwordHash : null;
+  } catch(e) { return null; }
+}
+
+async function setStoredPasswordHash(hash) {
+  const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+  await setDoc(configDoc, { passwordHash: hash });
+}
+
+function restoreAdminSession() {
+  try {
+    const s = sessionStorage.getItem(SESSION_KEY);
+    if (s === '1') { isAdmin = true; updateAdminUI(); }
+  } catch(e) {}
+}
+
+window.handleAdminClick = async function() {
+  if (isAdmin) {
+    isAdmin = false;
+    try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
+    updateAdminUI(); render();
+    showToast('管理者モードを終了しました'); return;
+  }
+  const stored = await getStoredPasswordHash();
+  if (!stored) {
+    modalMode = 'setup';
+    document.getElementById('modalTitle').textContent = '管理者パスワードの設定';
+    document.getElementById('modalSub').textContent = '初回のみ：パスワードを設定してください';
+    document.getElementById('modalConfirmBtn').textContent = '設定する';
+  } else {
+    modalMode = 'login';
+    document.getElementById('modalTitle').textContent = '管理者ログイン';
+    document.getElementById('modalSub').textContent = 'パスワードを入力してください';
+    document.getElementById('modalConfirmBtn').textContent = 'ログイン';
+  }
+  document.getElementById('modalPassword').value = '';
+  document.getElementById('modalError').style.display = 'none';
   document.getElementById('modalOverlay').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('modalPassword').focus(),100);
-}
-function closeModal(){ document.getElementById('modalOverlay').classList.add('hidden'); }
-function modalConfirm(){
-  const pw=document.getElementById('modalPassword').value;
-  if(!pw) return;
-  if(modalMode==='setup'){
-    if(pw.length<4){ document.getElementById('modalError').textContent='4文字以上で設定してください'; document.getElementById('modalError').style.display='block'; return; }
-    setStoredPassword(pw); isAdmin=true; closeModal(); updateAdminUI(); render(); showToast('パスワードを設定しました 🔐');
-  } else {
-    if(pw!==getStoredPassword()){ document.getElementById('modalError').textContent='パスワードが違います'; document.getElementById('modalError').style.display='block'; document.getElementById('modalPassword').value=''; return; }
-    isAdmin=true; closeModal(); updateAdminUI(); render(); showToast('管理者モードでログインしました 🔓');
+  setTimeout(() => document.getElementById('modalPassword').focus(), 100);
+};
+
+window.closeModal = function() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+};
+
+window.modalConfirm = async function() {
+  const pw = document.getElementById('modalPassword').value;
+  if (!pw) return;
+  const hash = await hashPassword(pw);
+
+  if (modalMode === 'setup') {
+    if (pw.length < 4) {
+      document.getElementById('modalError').textContent = '4文字以上で設定してください';
+      document.getElementById('modalError').style.display = 'block'; return;
+    }
+    try {
+      await setStoredPasswordHash(hash);
+      isAdmin = true;
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+      closeModal(); updateAdminUI(); render();
+      showToast('パスワードを設定しました 🔐');
+    } catch(e) {
+      document.getElementById('modalError').textContent = '設定に失敗しました';
+      document.getElementById('modalError').style.display = 'block';
+    }
+  } else if (modalMode === 'login') {
+    const stored = await getStoredPasswordHash();
+    if (hash !== stored) {
+      document.getElementById('modalError').textContent = 'パスワードが違います';
+      document.getElementById('modalError').style.display = 'block';
+      document.getElementById('modalPassword').value = ''; return;
+    }
+    isAdmin = true;
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    closeModal(); updateAdminUI(); render();
+    showToast('管理者モードでログインしました 🔓');
+  } else if (modalMode === 'change') {
+    if (pw.length < 4) {
+      document.getElementById('modalError').textContent = '4文字以上で設定してください';
+      document.getElementById('modalError').style.display = 'block'; return;
+    }
+    try {
+      await setStoredPasswordHash(hash);
+      closeModal();
+      showToast('パスワードを変更しました 🔑');
+    } catch(e) {
+      document.getElementById('modalError').textContent = '変更に失敗しました';
+      document.getElementById('modalError').style.display = 'block';
+    }
   }
-}
-function updateAdminUI(){
-  const btn=document.getElementById('adminBtn');
-  document.getElementById('adminIcon').textContent=isAdmin?'🔓':'🔒';
-  document.getElementById('adminLabel').textContent=isAdmin?'ログアウト':'管理者モード';
-  btn.classList.toggle('active',isAdmin);
+};
+
+window.changePassword = function() {
+  if (!isAdmin) return;
+  modalMode = 'change';
+  document.getElementById('modalTitle').textContent = 'パスワード変更';
+  document.getElementById('modalSub').textContent = '新しいパスワードを入力';
+  document.getElementById('modalConfirmBtn').textContent = '変更する';
+  document.getElementById('modalPassword').value = '';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('modalPassword').focus(), 100);
+};
+
+function updateAdminUI() {
+  const btn = document.getElementById('adminBtn');
+  document.getElementById('adminIcon').textContent = isAdmin ? '🔓' : '🔒';
+  document.getElementById('adminLabel').textContent = isAdmin ? 'ログアウト' : '管理者モード';
+  btn.classList.toggle('active', isAdmin);
 }
 
-// Grade chips
-function buildGradeChips(){
-  const row=document.getElementById('gradeRow'); row.innerHTML='';
-  GRADES.forEach(g=>{
-    const c=document.createElement('button');
-    c.className='chip'+(selectedGrade===g?' grade-on':'');
-    c.textContent=g;
-    c.onclick=()=>{ selectedGrade=g; buildGradeChips(); updateSubmitState(); };
+// ── Grade chips ──
+function buildGradeChips() {
+  const row = document.getElementById('gradeRow');
+  row.innerHTML = '';
+  GRADES.forEach(g => {
+    const c = document.createElement('button');
+    c.className = 'chip' + (selectedGrade === g ? ' grade-on' : '');
+    c.textContent = g;
+    c.onclick = () => { selectedGrade = g; buildGradeChips(); updateSubmitState(); };
     row.appendChild(c);
   });
 }
 
-// Photo
-function handlePhoto(ev){
-  const file=ev.target.files?.[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{ photoData=e.target.result; document.getElementById('photoCircle').innerHTML='<img src="'+photoData+'" alt="preview">'; };
-  reader.readAsDataURL(file);
-}
-
-// Form
-function toggleForm(){
-  formOpen=!formOpen;
-  document.getElementById('formPanel').classList.toggle('hidden',!formOpen);
-  document.getElementById('plusIcon').classList.toggle('open',formOpen);
-  document.getElementById('toggleLabel').textContent=formOpen?'キャンセル':'自己紹介を投稿';
-  document.getElementById('toggleFormBtn').classList.toggle('cancel',formOpen);
-}
-function updateSubmitState(){
-  const ok=document.getElementById('nameInput').value.trim()&&selectedGrade;
-  document.getElementById('submitBtn').className='btn-submit '+(ok?'active':'inactive');
-}
-function submitMember(){
-  const name=document.getElementById('nameInput').value.trim();
-  if(!name||!selectedGrade) return;
-  members.push({ id:Date.now(), name, grade:selectedGrade,
-    origin:document.getElementById('originInput').value.trim(),
-    vhistory:document.getElementById('vhistoryInput').value.trim(),
-    hobby:document.getElementById('hobbyInput').value.trim(),
-    photo:photoData });
-  save();
-  document.getElementById('nameInput').value='';
-  document.getElementById('originInput').value='';
-  document.getElementById('vhistoryInput').value='';
-  document.getElementById('hobbyInput').value='';
-  selectedGrade=''; photoData=null;
-  document.getElementById('photoCircle').innerHTML='<div class="photo-placeholder"><div class="icon">📷</div><div class="text">タップで追加</div></div>';
-  document.getElementById('photoInput').value='';
-  buildGradeChips(); updateSubmitState();
-  formOpen=false;
-  document.getElementById('formPanel').classList.add('hidden');
-  document.getElementById('plusIcon').classList.remove('open');
-  document.getElementById('toggleLabel').textContent='自己紹介を投稿';
-  document.getElementById('toggleFormBtn').classList.remove('cancel');
-  render(); showToast('投稿しました！🏐');
-}
-
-// Delete
-function deleteMember(id){
-  if(!isAdmin){showToast('削除は管理者のみ可能です 🔒');return;}
-  if(!confirm('このメンバーを削除しますか？'))return;
-  members=members.filter(m=>m.id!==id); save(); render(); showToast('削除しました');
-}
-function resetAll(){
-  if(!isAdmin){showToast('リセットは管理者のみ可能です 🔒');return;}
-  if(!confirm('全てのメンバーを削除しますか？'))return;
-  members=[]; try{localStorage.removeItem('cav-members');}catch(e){} render(); showToast('リセットしました');
-}
-function flipCard(id){ const el=document.getElementById('card-'+id); if(el) el.classList.toggle('flipped'); }
-
-// Render
-function render(){
-  const area=document.getElementById('memberArea'), statsArea=document.getElementById('statsArea'), toolbar=document.getElementById('dataToolbar');
-  toolbar.style.display=(members.length>0&&isAdmin)?'':'none';
-  if(members.length===0){
-    area.innerHTML='<div class="empty"><div class="ball">🏐</div><p>まだメンバーがいません<br>「自己紹介を投稿」から始めましょう！</p></div>';
-    statsArea.innerHTML=''; return;
+// ── Photo ──
+window.handlePhoto = async function(ev) {
+  const file = ev.target.files?.[0];
+  if (!file) return;
+  const circle = document.getElementById('photoCircle');
+  circle.innerHTML += '<div class="photo-loading">圧縮中...</div>';
+  try {
+    photoData = await compressImage(file);
+    circle.innerHTML = '<img src="' + photoData + '" alt="preview">';
+  } catch(e) {
+    circle.innerHTML = '<div class="photo-placeholder"><div class="icon">📷</div><div class="text">タップで追加</div></div>';
+    showToast('画像の処理に失敗しました');
   }
-  const grouped={}; GRADE_ORDER.forEach(g=>{grouped[g]=[];});
-  members.forEach(m=>{ const g=GRADE_ORDER.includes(m.grade)?m.grade:''; grouped[g].push(m); });
+};
 
-  let html='', cardIdx=0;
-  GRADE_ORDER.forEach((grade,gi)=>{
-    const list=grouped[grade]; if(!list.length) return;
-    const label=grade||'未設定';
-    html+='<div class="grade-section"><div class="grade-section-header"><div class="grade-section-title">'+escHtml(label)+'</div><div class="grade-section-count">'+list.length+'人</div><div class="grade-section-line"></div></div><div class="grid">';
-    list.forEach(m=>{
-      const theme=THEMES[gi%THEMES.length];
-      const avatar=m.photo?'<img src="'+m.photo+'" alt="'+escHtml(m.name)+'">':'<div class="avatar-letter">'+(m.name?.[0]||'?')+'</div>';
-      const gradeH=m.grade?'<div class="member-grade">'+escHtml(m.grade)+'</div>':'';
-      let tags='';
-      if(m.origin) tags+='<span class="info-tag">📍'+escHtml(m.origin)+'</span>';
-      if(m.vhistory) tags+='<span class="info-tag">🏐'+escHtml(m.vhistory)+'</span>';
-      let details='';
-      if(m.origin) details+='<div class="detail-box"><div class="detail-label">出身地</div><div class="detail-text">'+escHtml(m.origin)+'</div></div>';
-      if(m.vhistory) details+='<div class="detail-box"><div class="detail-label">バレー歴</div><div class="detail-text">'+escHtml(m.vhistory)+'</div></div>';
-      if(m.hobby) details+='<div class="detail-box"><div class="detail-label">趣味</div><div class="detail-text">'+escHtml(m.hobby)+'</div></div>';
-      if(!details) details='<div class="back-msg">よろしくお願いします！🏐</div>';
-      const del=isAdmin?'<button class="delete-btn" onclick="event.stopPropagation();deleteMember('+m.id+')">✕</button>':'';
-      html+='<div class="card-wrap" style="animation:cardIn .5s ease-out '+cardIdx*0.06+'s both"><div class="card-inner" id="card-'+m.id+'" onclick="flipCard('+m.id+')"><div class="card-face '+theme+'"><div class="top-bar" style="background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.25),rgba(255,255,255,.1))"></div><div class="card-front"><div class="avatar" style="border:2px solid rgba(255,255,255,.2);box-shadow:0 0 16px rgba(255,255,255,.1)">'+avatar+'</div><div class="member-name">'+escHtml(m.name)+'</div>'+gradeH+'<div class="info-row">'+tags+'</div></div></div><div class="card-face card-back"><svg width="32" height="32" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,.2)" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/></svg><div class="back-name">'+escHtml(m.name)+'</div><div class="back-sub">'+escHtml(m.grade||'')+'</div>'+details+'</div></div>'+del+'</div>';
+// ── Form ──
+window.toggleForm = function() {
+  formOpen = !formOpen;
+  if (!formOpen) resetForm();
+  document.getElementById('formPanel').classList.toggle('hidden', !formOpen);
+  document.getElementById('plusIcon').classList.toggle('open', formOpen);
+  document.getElementById('toggleLabel').textContent = formOpen ? 'キャンセル' : '自己紹介を投稿';
+  document.getElementById('toggleFormBtn').classList.toggle('cancel', formOpen);
+};
+
+function resetForm() {
+  editingId = null;
+  document.getElementById('formTitle').textContent = '新規投稿';
+  document.getElementById('nameInput').value = '';
+  document.getElementById('originInput').value = '';
+  document.getElementById('vhistoryInput').value = '';
+  document.getElementById('hobbyInput').value = '';
+  selectedGrade = ''; photoData = null;
+  document.getElementById('photoCircle').innerHTML = '<div class="photo-placeholder"><div class="icon">📷</div><div class="text">タップで追加</div></div>';
+  document.getElementById('photoInput').value = '';
+  buildGradeChips(); updateSubmitState();
+}
+
+function updateSubmitState() {
+  if (submitting) return;
+  const ok = document.getElementById('nameInput').value.trim() && selectedGrade;
+  document.getElementById('submitBtn').className = 'btn-submit ' + (ok ? 'active' : 'inactive');
+}
+
+window.submitMember = async function() {
+  if (submitting) return;
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name || !selectedGrade) return;
+
+  submitting = true;
+  const btn = document.getElementById('submitBtn');
+  btn.className = 'btn-submit loading';
+  btn.textContent = editingId ? '更新中...' : '投稿中...';
+
+  const data = {
+    name,
+    grade: selectedGrade,
+    origin: document.getElementById('originInput').value.trim(),
+    vhistory: document.getElementById('vhistoryInput').value.trim(),
+    hobby: document.getElementById('hobbyInput').value.trim(),
+    photo: photoData || null
+  };
+
+  try {
+    if (editingId) {
+      await updateDoc(doc(db, "members", editingId), data);
+      showToast('更新しました ✏️');
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(membersCol, data);
+      showToast('投稿しました！🏐');
+    }
+    resetForm();
+    formOpen = false;
+    document.getElementById('formPanel').classList.add('hidden');
+    document.getElementById('plusIcon').classList.remove('open');
+    document.getElementById('toggleLabel').textContent = '自己紹介を投稿';
+    document.getElementById('toggleFormBtn').classList.remove('cancel');
+  } catch(e) {
+    console.error(e);
+    showToast('保存に失敗しました');
+  } finally {
+    submitting = false;
+    btn.textContent = '投稿する 🏐';
+    updateSubmitState();
+  }
+};
+
+// ── Edit ──
+window.editMember = function(id) {
+  if (!isAdmin) { showToast('編集は管理者のみ可能です 🔒'); return; }
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  editingId = id;
+  document.getElementById('formTitle').textContent = '編集';
+  document.getElementById('nameInput').value = m.name || '';
+  document.getElementById('originInput').value = m.origin || '';
+  document.getElementById('vhistoryInput').value = m.vhistory || '';
+  document.getElementById('hobbyInput').value = m.hobby || '';
+  selectedGrade = m.grade || '';
+  photoData = m.photo || null;
+  buildGradeChips();
+  const circle = document.getElementById('photoCircle');
+  if (photoData) circle.innerHTML = '<img src="' + photoData + '" alt="preview">';
+  else circle.innerHTML = '<div class="photo-placeholder"><div class="icon">📷</div><div class="text">タップで追加</div></div>';
+  updateSubmitState();
+  formOpen = true;
+  document.getElementById('formPanel').classList.remove('hidden');
+  document.getElementById('plusIcon').classList.add('open');
+  document.getElementById('toggleLabel').textContent = 'キャンセル';
+  document.getElementById('toggleFormBtn').classList.add('cancel');
+  document.getElementById('formPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+// ── Delete ──
+window.deleteMember = async function(id) {
+  if (!isAdmin) { showToast('削除は管理者のみ可能です 🔒'); return; }
+  if (!confirm('このメンバーを削除しますか？')) return;
+  try {
+    await deleteDoc(doc(db, "members", id));
+    showToast('削除しました');
+  } catch(e) { showToast('削除に失敗しました'); }
+};
+
+window.resetAll = async function() {
+  if (!isAdmin) { showToast('リセットは管理者のみ可能です 🔒'); return; }
+  if (!confirm('全てのメンバーを削除しますか？この操作は取り消せません。')) return;
+  try {
+    const snap = await getDocs(membersCol);
+    const batch = writeBatch(db);
+    snap.docs.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+    showToast('リセットしました');
+  } catch(e) { showToast('リセットに失敗しました'); }
+};
+
+window.flipCard = function(id) {
+  const el = document.getElementById('card-' + id);
+  if (el) el.classList.toggle('flipped');
+};
+
+// ── Render ──
+function render() {
+  const area = document.getElementById('memberArea');
+  const statsArea = document.getElementById('statsArea');
+  const toolbar = document.getElementById('dataToolbar');
+  toolbar.style.display = isAdmin ? '' : 'none';
+
+  if (members.length === 0) {
+    area.innerHTML = '<div class="empty"><div class="ball">🏐</div><p>まだメンバーがいません<br>「自己紹介を投稿」から始めましょう！</p></div>';
+    statsArea.innerHTML = ''; return;
+  }
+
+  const grouped = {};
+  GRADE_ORDER.forEach(g => { grouped[g] = []; });
+  members.forEach(m => {
+    const g = GRADE_ORDER.includes(m.grade) ? m.grade : '';
+    grouped[g].push(m);
+  });
+
+  let html = '', cardIdx = 0;
+  GRADE_ORDER.forEach((grade, gi) => {
+    const list = grouped[grade];
+    if (!list.length) return;
+    const label = grade || '未設定';
+    html += '<div class="grade-section"><div class="grade-section-header"><div class="grade-section-title">' + escHtml(label) + '</div><div class="grade-section-count">' + list.length + '人</div><div class="grade-section-line"></div></div><div class="grid">';
+    list.forEach(m => {
+      const theme = THEMES[gi % THEMES.length];
+      const avatar = m.photo
+        ? '<img src="' + m.photo + '" alt="' + escHtml(m.name) + '">'
+        : '<div class="avatar-letter">' + (m.name?.[0] || '?') + '</div>';
+      const gradeH = m.grade ? '<div class="member-grade">' + escHtml(m.grade) + '</div>' : '';
+      let tags = '';
+      if (m.origin) tags += '<span class="info-tag">📍' + escHtml(m.origin) + '</span>';
+      if (m.vhistory) tags += '<span class="info-tag">🏐' + escHtml(m.vhistory) + '</span>';
+      let details = '';
+      if (m.origin) details += '<div class="detail-box"><div class="detail-label">出身地</div><div class="detail-text">' + escHtml(m.origin) + '</div></div>';
+      if (m.vhistory) details += '<div class="detail-box"><div class="detail-label">バレー歴</div><div class="detail-text">' + escHtml(m.vhistory) + '</div></div>';
+      if (m.hobby) details += '<div class="detail-box"><div class="detail-label">趣味</div><div class="detail-text">' + escHtml(m.hobby) + '</div></div>';
+      if (!details) details = '<div class="back-msg">よろしくお願いします！🏐</div>';
+      const actions = isAdmin
+        ? '<div class="card-actions"><button class="icon-btn edit" onclick="event.stopPropagation();editMember(\'' + m.id + '\')">✎</button><button class="icon-btn delete" onclick="event.stopPropagation();deleteMember(\'' + m.id + '\')">✕</button></div>'
+        : '';
+      html += '<div class="card-wrap" style="animation:cardIn .5s ease-out ' + cardIdx*0.06 + 's both"><div class="card-inner" id="card-' + m.id + '" onclick="flipCard(\'' + m.id + '\')"><div class="card-face ' + theme + '"><div class="top-bar" style="background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.25),rgba(255,255,255,.1))"></div><div class="card-front"><div class="avatar" style="border:2px solid rgba(255,255,255,.2);box-shadow:0 0 16px rgba(255,255,255,.1)">' + avatar + '</div><div class="member-name">' + escHtml(m.name) + '</div>' + gradeH + '<div class="info-row">' + tags + '</div></div></div><div class="card-face card-back"><svg width="32" height="32" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="46" stroke="rgba(255,255,255,.2)" stroke-width="3"/><path d="M50 4C50 4,30 35,50 50C70 65,50 96,50 96" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/><path d="M8 30C8 30,45 40,50 50C55 60,92 70,92 70" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/><path d="M8 70C8 70,40 55,50 50C60 45,92 30,92 30" stroke="rgba(255,255,255,.2)" stroke-width="2.5"/></svg><div class="back-name">' + escHtml(m.name) + '</div><div class="back-sub">' + escHtml(m.grade || '') + '</div>' + details + '</div></div>' + actions + '</div>';
       cardIdx++;
     });
-    html+='</div></div>';
+    html += '</div></div>';
   });
-  area.innerHTML=html;
+  area.innerHTML = html;
 
-  const gradeCounts=GRADE_ORDER.filter(g=>g).map(g=>({label:g,count:grouped[g].length})).filter(x=>x.count>0);
-  let sh='<div class="stats"><div class="stats-inner">';
-  gradeCounts.forEach((gc,i)=>{ if(i>0) sh+='<div class="stat-sep"></div>'; sh+='<div class="stat-item"><div class="stat-num" style="color:rgba(255,255,255,.8)">'+gc.count+'</div><div class="stat-label">'+gc.label+'</div></div>'; });
-  sh+='<div class="stat-sep"></div><div class="stat-item"><div class="stat-num" style="color:#ffb74d">'+members.length+'</div><div class="stat-label">合計</div></div></div></div>';
-  statsArea.innerHTML=sh;
+  const gradeCounts = GRADE_ORDER.filter(g => g).map(g => ({ label: g, count: grouped[g].length })).filter(x => x.count > 0);
+  let sh = '<div class="stats"><div class="stats-inner">';
+  gradeCounts.forEach((gc, i) => {
+    if (i > 0) sh += '<div class="stat-sep"></div>';
+    sh += '<div class="stat-item"><div class="stat-num" style="color:rgba(255,255,255,.8)">' + gc.count + '</div><div class="stat-label">' + gc.label + '</div></div>';
+  });
+  sh += '<div class="stat-sep"></div><div class="stat-item"><div class="stat-num" style="color:#ffb74d">' + members.length + '</div><div class="stat-label">合計</div></div></div></div>';
+  statsArea.innerHTML = sh;
 }
 
-// JSON
-function exportJSON(){
-  const data=members.map(m=>({name:m.name,grade:m.grade,origin:m.origin,vhistory:m.vhistory,hobby:m.hobby,photo:m.photo||null}));
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='cav-members.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+// ── JSON Export ──
+window.exportJSON = function() {
+  const data = members.map(m => ({
+    name: m.name, grade: m.grade, origin: m.origin,
+    vhistory: m.vhistory, hobby: m.hobby, photo: m.photo || null
+  }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'cav-members.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
   showToast('JSONをエクスポートしました 📤');
+};
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hide');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.add('hide'), 2500);
 }
-function importJSON(ev){
-  const file=ev.target.files?.[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    try{
-      const data=JSON.parse(e.target.result); if(!Array.isArray(data)) throw new Error();
-      let c=0; data.forEach(d=>{ if(!d.name)return; members.push({id:Date.now()+Math.random(),name:d.name,grade:d.grade||'',origin:d.origin||'',vhistory:d.vhistory||'',hobby:d.hobby||'',photo:d.photo||null}); c++; });
-      save(); render(); showToast(c+'人をインポートしました 📥');
-    }catch(err){showToast('JSONの読み込みに失敗しました');}
-    ev.target.value='';
-  };
-  reader.readAsText(file);
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
 }
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hide'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.add('hide'),2500); }
-function escHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-init();
+
+// ── Init ──
+buildGradeChips();
+restoreAdminSession();
+initFirestore();
+document.getElementById('nameInput').addEventListener('input', updateSubmitState);
+
+// Expose for inline handlers
+window.render = render;
 </script>
 </body>
 </html>
